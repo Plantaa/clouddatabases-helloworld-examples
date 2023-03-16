@@ -1,12 +1,12 @@
 resource "ibm_database" "postgresdb" {
-  resource_group_id = ibm_resource_group.resource_group.id
+  resource_group_id = data.ibm_resource_group.rg.id
   name              = "pg-hello-world"
   service           = "databases-for-postgresql"
   plan              = "standard"
   location          = var.region
-  adminpassword = var.admin_password
+  adminpassword     = var.admin_password
 
- 
+
   timeouts {
     create = "120m"
     update = "120m"

@@ -1,10 +1,11 @@
 const { Etcd3 } = require('etcd3');
+const fs = require("fs");
 const config = require("./config.json");
-const password = config.password.value
-const user = config.user.value
-const host = config.host.value
-const port = config.port.value
-const cert = Buffer.from(config.cert.value, "base64")
+const password = config.connection.grpc.authentication.password
+const user = config.connection.grpc.authentication.username
+const host = config.connection.grpc.hosts[0].hostname
+const port = config.connection.grpc.hosts[0].port
+const cert = fs.readFileSync("./etcd.cert")
 //console.log(cert)
 
 module.exports = async function () {

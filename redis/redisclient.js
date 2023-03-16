@@ -1,19 +1,17 @@
-
-const redis = require("redis")
+const redis = require("redis");
+const fs = require("fs");
 const config = require("./config.json");
-const cert_b64 = config.redis_credentials.value["connection.cli.certificate.certificate_base64"]
-const cert = Buffer.from(cert_b64, "base64").toString()
-const uri= config.redis_credentials.value["connection.rediss.composed.0"]
-//console.log(cert)
-//console.log(uri)
 
+const path_to_certfile = "./redis.cert";
+var cert = fs.readFileSync(path_to_certfile, 'utf8');
+
+const uri = config.connection.rediss.composed[0];
 module.exports = async function () {
-
   var opts = {
-    url:uri,
+    url: uri,
     socket: {
-      tls:true,
-      ca:cert
+      tls: true,
+      ca: cert
     }
   }
 
@@ -25,3 +23,11 @@ module.exports = async function () {
 
   return redisClient
 }
+
+// const client = redis.createClient({
+//   host: config.connection.rediss.hosts[0].hostname,
+//   port: config.connection.rediss.hosts[0].port,
+//   tls: {
+//     cert: fs.readFileSync(path_to_certfile, encoding = 'ascii')
+//   }
+// });

@@ -1,5 +1,8 @@
+data "ibm_resource_group" "rg" {
+  name = var.resource_group
+}
 resource "ibm_database" "etcddb" {
-  resource_group_id = ibm_resource_group.resource_group.id
+  resource_group_id = data.ibm_resource_group.rg.id
   name              = "etcd-hello-world"
   service           = "databases-for-etcd"
   plan              = "standard"
@@ -31,9 +34,9 @@ output "host" {
 }
 
 output "port" {
-  value = ibm_database.etcddb.connectionstrings[0].hosts[0].port  
+  value = ibm_database.etcddb.connectionstrings[0].hosts[0].port
 }
 
 output "user" {
-  value = ibm_database.etcddb.connectionstrings[0].name  
+  value = ibm_database.etcddb.connectionstrings[0].name
 }

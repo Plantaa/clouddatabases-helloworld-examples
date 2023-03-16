@@ -1,15 +1,16 @@
 const amqplib = require('amqplib');
+const fs = require("fs");
 const config = require("./config.json");
-const password = config.password.value
-const uri = config.url.value.replace('$PASSWORD', password)
-const cert = Buffer.from(config.cert.value, "base64").toString()
+const password = config.connection.amqps.authentication.password
+const uri = config.connection.amqps.composed[0]
+const cert = fs.readFileSync("./rabbitmq.cert")
 //console.log(cert)
 
 module.exports = async function () {
 
   const routingKey = "words";
   const exchangeName = "ibmclouddb";
-  const  qName = "sample";
+  const qName = "sample";
 
   // open connection
   const conn = await amqplib.connect(uri, { ca: [cert] });

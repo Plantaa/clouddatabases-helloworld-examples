@@ -1,17 +1,22 @@
-const { Client } = require('pg')
+const { Client, Pool } = require('pg')
+const fs = require("fs")
 
-const config = require("./config.json");
-const password = config.password.value
-const uri = config.url.value.replace('$PASSWORD', password) //.replace(/\?sslmode.+$/,'')
-const cert = Buffer.from(config.cert.value, "base64").toString()
-console.log(cert)
+const env = require("./config.json");
+const password = env.connection.postgres.authentication.password;
+const username = env.connection.postgres.authentication.username;
+const uri = env.connection.postgres.composed[0].split("?")[0];
+const cert = env.connection.postgres.certificate.certificate_authority
+const ca64 = env.connection.postgres.certificate.certificate_base64
+// const cert = config.connection.postgres.certificate.certificate_authority;
+const path_to_certfile = "./postgresql.cert";
+var ca = fs.readFileSync(path_to_certfile, 'utf8');
 
 module.exports = async function () {
 
-  const client = new Client({ 
+  const client = new Client({
     connectionString: uri,
     ssl: {
-      ca: cert,
+      ca,
       rejectUnauthorized: true
     }
   })
@@ -25,7 +30,7 @@ module.exports = async function () {
   const query = 'CREATE TABLE IF NOT EXISTS words (_id SERIAL PRIMARY KEY, word varchar(255), definition varchar(255))'
 
   await client.query(query)
-  
+
   console.log("table created")
 
   return client

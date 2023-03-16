@@ -1,13 +1,17 @@
+data "ibm_resource_group" "rg" {
+  name = var.resource_group
+}
+
 resource "ibm_database" "mysqldb" {
-  resource_group_id = ibm_resource_group.resource_group.id
+  resource_group_id = data.ibm_resource_group.rg.id
   name              = "mysql-hello-world"
   service           = "databases-for-mysql"
   plan              = "standard"
-  version = "8.0"
+  version           = "8.0"
   location          = var.region
-  adminpassword = var.admin_password
+  adminpassword     = var.admin_password
 
- 
+
   timeouts {
     create = "120m"
     update = "120m"
@@ -32,9 +36,9 @@ output "host" {
 }
 
 output "port" {
-  value = ibm_database.mysqldb.connectionstrings[0].hosts[0].port  
+  value = ibm_database.mysqldb.connectionstrings[0].hosts[0].port
 }
 
 output "user" {
-  value = ibm_database.mysqldb.connectionstrings[0].name  
+  value = ibm_database.mysqldb.connectionstrings[0].name
 }

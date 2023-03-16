@@ -5,9 +5,9 @@ resource "ibm_database" "mongodb" {
   plan              = "standard"
   location          = var.region
   version           = "4.4"
-  adminpassword = var.admin_password
+  adminpassword     = var.admin_password
 
- 
+
   timeouts {
     create = "120m"
     update = "120m"
